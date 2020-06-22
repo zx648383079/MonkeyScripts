@@ -1,0 +1,10 @@
+{
+    "code-runner.executorMapByFileExtension": {
+        ".ts": "gulp --file=$fullFileName",
+    },
+    "code-runner.executorMap": {
+        "typescript": "gulp --file=$fullFileName",
+    },
+    "javascript.preferences.importModuleSpecifier": "relative",
+    "typescript.preferences.importModuleSpecifier": "relative"
+}
