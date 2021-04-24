@@ -22,12 +22,48 @@ class Exam {
     private rules = {
         'www.jiakaobaodian.com': function() {
             const box = $('#ComQuestionDetail_qundefined');
-            const name = box.find('.timu-text').text();
+            const title = box.find('.timu-text').text().trim().replace(/^\d+\/\d+、/,  '');
+            const image = box.find('.media-w img').attr('src');
             const items = [];
+            let isJudge = true;
+            let answer = false;
+            let rightCount = 0;
             box.find('.options-w p').each((i: number, item: HTMLDivElement) => {
-                items.push(item.innerText);
+                const ele = $(item);
+                let option = ele.text().trim().replace(/^[A-Z]、/, '').trim();
+                if (['正确', '错误'].indexOf(option) < 0) {
+                    isJudge = false;
+                }
+                const isRight = ele.hasClass('success');
+                if (option === '正确' && isRight) {
+                    answer = true;
+                }
+                if (isRight) {
+                    rightCount ++;
+                }
+                items.push({
+                    content: option,
+                    is_right: isRight
+                });
             });
-            return {name, items};
+            let data = {title};
+            if (image) {
+                data['image'] = image;
+            }
+            if (isJudge) {
+                data['type'] = 2;
+                data['answer'] = answer;
+            } else {
+                data['option'] = items;
+                data['type'] = rightCount > 1 ? 1 : 0;
+            }
+            const next = $('.com-shiti-xiangjie');
+            if (next.length < 1) {
+                return data;
+            }
+            data['easiness'] = parseInt(next.find('.star-w-s .bfb').attr('style').replace(/\D+/g, '')) / 10 - 1;
+            data['analysis'] = next.find('.xiangjie .content').text();
+            return data;
         }
     };
 
@@ -42,15 +78,14 @@ class Exam {
         if (!info) {
             return;
         }
-        console.log(info);
-        
-        //this.save(info);
+        this.save(info);
     }
 
     
     public save(data: any) {
+        data['course_id'] = 5;
         GM_xmlhttpRequest({
-            url: 'http://zodream.localhost/exam/admin/goods/import',
+            url: 'http://zodream.localhost/exam/admin/question/import',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -62,7 +97,9 @@ class Exam {
                 var repsone = JSON.parse(res.responseText);
                 if (repsone && repsone.code == 200) {
                     alert('导入成功');
+                    return;
                 }
+                alert(repsone && repsone.errors ? repsone.errors : '导入失败');
             }
         })
     }

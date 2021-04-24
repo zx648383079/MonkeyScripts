@@ -127,10 +127,10 @@ export declare function GM_registerMenuCommand(name: string, fn: Function, acces
 export declare function GM_unregisterMenuCommand(menuCmdId: number):void;
 
 export declare interface OpenTabOption {
-    active: boolean;
-    insert: number;
-    setParent: any;
-    incognito: any;
+    active?: boolean;
+    insert?: number;
+    setParent?: any;
+    incognito?: any;
 }
 
 export declare function GM_openInTab(url: string, options: OpenTabOption): void;

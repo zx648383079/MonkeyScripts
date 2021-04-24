@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name:           WeChat News Download
+// @name            WeChat News Download
 // @name:zh-CN      微信公众号推文图片一键下载
 // @namespace       https://zodream.cn/
 // @version         0.1

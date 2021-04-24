@@ -16,12 +16,49 @@
             this.rules = {
                 'www.jiakaobaodian.com': function () {
                     var box = $('#ComQuestionDetail_qundefined');
-                    var name = box.find('.timu-text').text();
+                    var title = box.find('.timu-text').text().trim().replace(/^\d+\/\d+、/, '');
+                    var image = box.find('.media-w img').attr('src');
                     var items = [];
+                    var isJudge = true;
+                    var answer = false;
+                    var rightCount = 0;
                     box.find('.options-w p').each(function (i, item) {
-                        items.push(item.innerText);
+                        var ele = $(item);
+                        var option = ele.text().trim().replace(/^[A-Z]、/, '').trim();
+                        if (['正确', '错误'].indexOf(option) < 0) {
+                            isJudge = false;
+                        }
+                        var isRight = ele.hasClass('success');
+                        if (option === '正确' && isRight) {
+                            answer = true;
+                        }
+                        if (isRight) {
+                            rightCount++;
+                        }
+                        items.push({
+                            content: option,
+                            is_right: isRight
+                        });
                     });
-                    return { name: name, items: items };
+                    var data = { title: title };
+                    if (image) {
+                        data['image'] = image;
+                    }
+                    if (isJudge) {
+                        data['type'] = 2;
+                        data['answer'] = answer;
+                    }
+                    else {
+                        data['option'] = items;
+                        data['type'] = rightCount > 1 ? 1 : 0;
+                    }
+                    var next = $('.com-shiti-xiangjie');
+                    if (next.length < 1) {
+                        return data;
+                    }
+                    data['easiness'] = parseInt(next.find('.star-w-s .bfb').attr('style').replace(/\D+/g, '')) / 10 - 1;
+                    data['analysis'] = next.find('.xiangjie .content').text();
+                    return data;
                 }
             };
             this.start();
@@ -37,12 +74,12 @@
             if (!info) {
                 return;
             }
-            console.log(info);
-            //this.save(info);
+            this.save(info);
         };
         Exam.prototype.save = function (data) {
+            data['course_id'] = 5;
             GM_xmlhttpRequest({
-                url: 'http://zodream.localhost/exam/admin/goods/import',
+                url: 'http://zodream.localhost/exam/admin/question/import',
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,7 +91,9 @@
                     var repsone = JSON.parse(res.responseText);
                     if (repsone && repsone.code == 200) {
                         alert('导入成功');
+                        return;
                     }
+                    alert(repsone && repsone.errors ? repsone.errors : '导入失败');
                 }
             });
         };

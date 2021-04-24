@@ -1,0 +1,470 @@
+// ==UserScript==
+// @name            CSDN 优化
+// @namespace       https://zodream.cn/
+// @version         0.1
+// @description     屏蔽登录，自动展开
+// @author          ZoDream
+// @include         https://blog.csdn.net/*
+// @grant           GM_addStyle
+// @run-at          document-end
+// ==/UserScript==
+(function () {
+    'use strict';
+    var CSDN = /** @class */ (function () {
+        /**
+         *
+         */
+        function CSDN() {
+            this.rules = [
+                {
+                    // 知乎 - 移动端页面
+                    reg: /^http(s)?:\/\/(www\.)?zhihu\.com\/(question\/\d+|tardis\/\w+)/i,
+                    remove: ['.RichContent--unescapable.is-collapsed .ContentItem-rightButton', '.sgui-slide-down'],
+                    content: [
+                        '.Body--Mobile .RichContent.is-collapsed .RichContent-inner',
+                        '.RichContent--unescapable.is-collapsed .RichContent-inner',
+                        '.App',
+                    ],
+                    style: "\n              .RichContent.is-collapsed {\n                cursor: auto !important;\n              }\n              .RichContent--unescapable.is-collapsed .RichContent-inner {\n                -webkit-mask-image: none !important;\n                mask-image: none !important;\n              }\n              ",
+                },
+                {
+                    // CSDN 博客 - PC & 移动端页面
+                    reg: /^http(s)?:\/\/blog\.csdn\.net\/[^/]+\/article\/details\/\d+/i,
+                    remove: ['div.hide-article-box', '.readall_box', '#writeGuide'],
+                    content: ['#article_content', '#article .article_content'],
+                },
+                {
+                    // CSDN 论坛 - PC & 移动端页面
+                    reg: /^http(s)?:\/\/bbs\.csdn\.net\/topics\/\d+/i,
+                    remove: ['.hide_topic_box', '.readall_wrap', '#writeGuide'],
+                    content: ['.container-box .bbs_detail_wrap', '.first_show'],
+                },
+                {
+                    // B 站视频简介
+                    reg: /^http(s)?:\/\/(www\.)?bilibili\.com\/video\/(av\d+|bv\w+)/i,
+                    remove: ['.video-desc .btn'],
+                    content: ['.video-desc .info'],
+                },
+                {
+                    // B 站移动端视频标题
+                    reg: /^http(s)?:\/\/m\.bilibili\.com\/video\/av\d+/i,
+                    remove: [
+                        '.index__videoInfo__src-videoPage-videoInfo- .index__foldSwitch__src-videoPage-videoInfo-',
+                    ],
+                    content: [
+                        '.index__videoInfo__src-videoPage-videoInfo- .index__title__src-videoPage-videoInfo-',
+                        '.index__descWrap__src-videoPage-infoBlock-',
+                    ],
+                    style: "\n              .index__videoInfo__src-videoPage-videoInfo- .index__title__src-videoPage-videoInfo- .index__titleContent__src-videoPage-videoInfo- {\n                  white-space: normal !important;\n                }\n              ",
+                },
+                {
+                    // Youtube 视频简介
+                    reg: /^http(s)?:\/\/(www\.)?youtube\.com\/watch\?v=\w+/i,
+                    remove: ['#container paper-button#more'],
+                    content: ['#container #content.ytd-expander'],
+                },
+                {
+                    // Youtube 移动端视频标题
+                    reg: /^http(s)?:\/\/m\.youtube\.com\/watch\?v=\w+/i,
+                    remove: [],
+                    content: [],
+                    script: function () {
+                        document.querySelector('button.slim-video-metadata-header').click();
+                    },
+                },
+                {
+                    // AcFun 视频简介
+                    reg: /^http(s)?:\/\/(www\.)?acfun\.cn\/v\/ac\d+/i,
+                    remove: ['#main .introduction .desc-operate'],
+                    content: ['#main .introduction .content-description.gheight'],
+                    style: "\n                #main .introduction .content-description.gheight .tag {\n                  display: block !important;\n                }\n              ",
+                },
+                {
+                    // AcFun 移动端视频标题
+                    reg: /^http(s)?:\/\/m\.acfun\.cn\/v\/\?ac=\d+/i,
+                    remove: ['.video-title .down'],
+                    content: [],
+                    script: function () {
+                        document
+                            .querySelector('.video-title .info-title')
+                            .classList.remove('hide-more');
+                    },
+                },
+                {
+                    // 回形针手册
+                    reg: /^http(s)?:\/\/(www\.)?ipaperclip\.net\/doku\.php\?id=.*/i,
+                    remove: ['.paperclip__showcurtain'],
+                    content: ['.paperclip__h1content__wrapped'],
+                },
+                {
+                    // 百度知道
+                    reg: /^http(s)?:\/\/zhidao\.baidu\.com\/question\/\d+\.html/i,
+                    remove: [
+                        '.wgt-ask .q-content .conSamp',
+                        '.wgt-ask .expend',
+                        '.wgt-answers .answer-text .wgt-answers-mask',
+                        'div.wgt-best .best-text .wgt-best-mask',
+                        '.iknow-root-dom-element .wgt-question-desc-explode .wgt-question-desc .wgt-question-desc-action',
+                        '.iknow-root-dom-element .w-detail-full-new .newyl-fold',
+                        '.iknow-root-dom-element .w-detail-full .w-detail-display-btn',
+                        '.iknow-root-dom-element .w-detail-dis-na-btn',
+                        '.wgt-answers #show-hide-container',
+                    ],
+                    content: [
+                        '.wgt-answers .answer-text',
+                        'div.wgt-best .best-text',
+                        '.iknow-root-dom-element .wgt-question-desc-explode .wgt-question-desc .wgt-question-desc-inner',
+                        '.iknow-root-dom-element .w-detail-full-new .w-detail-newyl.fold',
+                        '.iknow-root-dom-element .w-detail-full .w-detail-container',
+                        '.wgt-answers .answer-hide',
+                        '.wgt-answers .wgt-pager',
+                    ],
+                    style: "\n                .wgt-ask .q-content .conTemp, .wgt-ask .q-content .con-all {\n                  display: block !important;\n                }\n                .iknow-root-dom-element .wgt-question-desc-explode .wgt-question-desc .wgt-question-desc-inner {\n                  width: auto !important;\n                  white-space: normal !important;\n                }\n                .wgt-answers .answer-hide {\n                  visibility: visible;\n                }\n                .wgt-answers .wgt-pager {\n                  display: block !important;\n                }\n              ",
+                },
+                {
+                    // 人民日报
+                    reg: /^http(s)?:\/\/wap\.peopleapp\.com\/article\/\d+/i,
+                    remove: ['.read-more'],
+                    content: ['.article-wrapper.has-more-high'],
+                },
+                {
+                    // 澎湃新闻（移动版）
+                    reg: /^http(s)?:\/\/m\.thepaper\.cn\/newsDetail_forward_\d+/i,
+                    remove: ['a.news_open_app', '.news_part_all', '#carousel_banner.bot_banner'],
+                    content: ['.news_part_limit'],
+                },
+                {
+                    // 凤凰网
+                    reg: /^http(s)?:\/\/\w+\.ifeng\.com\/.*/i,
+                    remove: [],
+                    content: [],
+                    script: function () {
+                        document.querySelectorAll('*').forEach(function (el) {
+                            for (var i = 0; i < el.classList.length; i++) {
+                                var elClass = el.classList[i];
+                                if (/^(main_content|containerBox)-[a-zA-Z0-9]+/.test(elClass)) {
+                                    el.style.height = 'auto';
+                                    el.style.maxHeight = 'none';
+                                }
+                                else if (/^(more-1|tip|bottom_box|ad_box|shadow|callupBtn|bottomSlide|headerInfo|fixedIcon)-[a-zA-Z0-9]+/.test(elClass)) {
+                                    el.style.display = 'none';
+                                }
+                            }
+                        });
+                    },
+                },
+                {
+                    // JavaScript中文网
+                    reg: /^http(s)?:\/\/(www\.)?javascriptcn\.com\/.*/i,
+                    remove: ['.readall_box'],
+                    content: ['.markdown-body'],
+                },
+                {
+                    // 360doc 个人图书馆
+                    reg: /^http(s)?:\/\/(www\.)?360doc\.com\/content\/.*/i,
+                    remove: ['.article_showall'],
+                    content: ['.articleMaxH .article_container'],
+                },
+                {
+                    // 360doc 个人图书馆（移动端）
+                    reg: /^http(s)?:\/\/(www\.)?360doc\.cn\/article\/.*/i,
+                    remove: ['.article_showall'],
+                    content: ['.article_maxh'],
+                },
+                {
+                    // ITeye
+                    reg: /^http(s)?:\/\/(www\.)?iteye\.com\/blog\//i,
+                    remove: ['.hide-article-box'],
+                    content: ['.hide-main-content'],
+                },
+                {
+                    // 新浪体育（移动端）
+                    reg: /^http(s)?:\/\/sports\.sina\.cn\/.*/i,
+                    remove: ['.look_more'],
+                    content: ['.art_box'],
+                },
+                {
+                    // 手机网易
+                    reg: /^http(s)?:\/\/3g\.163\.com\/.*/i,
+                    remove: ['.footer'],
+                    content: ['article'],
+                    style: "article .content .page {\n                display: block !important;\n              }"
+                },
+                {
+                    // 腾讯新闻
+                    reg: /^http(s)?:\/\/xw\.qq\.com\/.*/i,
+                    remove: ['.collapseWrapper', '#article_body > .mask'],
+                    content: ['#article_body'],
+                },
+                {
+                    // 头条移动版
+                    reg: /^http(s)?:\/\/m\.toutiao\.com\/\w+\//i,
+                    remove: ['.unfold-field'],
+                    content: ['.article', '.article>div', '.article .article__content'],
+                },
+                {
+                    // 汽车之家（手机版）
+                    reg: /^http(s)?:\/\/(\w+\.)?m\.autohome\.com\.cn\/\w+\//i,
+                    remove: ['.pgc-details .continue_reading'],
+                    content: [],
+                    script: function () {
+                        document.querySelectorAll('#content .fn-hide').forEach(function (el) {
+                            el.classList.remove('fn-hide');
+                        });
+                    },
+                },
+                {
+                    // 张大妈移动端
+                    reg: /^http(s)?:\/\/(post\.)?m\.smzdm\.com\/p\/\w+/i,
+                    remove: ['.article-wrapper .expand-btn', '.foot-banner'],
+                    content: ['.article-wrapper'],
+                },
+                {
+                    // 爱问移动版
+                    reg: /^http(s)?:\/\/m\.iask\.sina\.com\.cn\/b\/\w+\.html/i,
+                    remove: ['.answer_lit'],
+                    content: [],
+                    style: "\n                .answer_all{\n                  display: block !important;\n                }\n              ",
+                },
+                {
+                    // 铁血移动版
+                    reg: /^http(s)?:\/\/m\.tiexue\.net\/touch\/thread_\d+/i,
+                    remove: ['.yxqw'],
+                    content: ['.articleCont'],
+                },
+                {
+                    // 百度百家号
+                    reg: /^http(s)?:\/\/(baijiahao|mbd)\.baidu\.com\//i,
+                    remove: ['.packupButton', '.contentMedia .openImg'],
+                    content: ['.mainContent'],
+                },
+                {
+                    // 米坛
+                    reg: /^http(s)?:\/\/(www\.)?bandbbs\.cn\/threads\/\d+/i,
+                    remove: [
+                        '.u-bottomFixer',
+                        '.bbCodeBlock--expandable.is-expandable .bbCodeBlock-expandLink',
+                    ],
+                    content: ['.bbCodeBlock--expandable .bbCodeBlock-expandContent'],
+                },
+                {
+                    // 腾讯云社区
+                    reg: /^http(s)?:\/\/cloud\.tencent\.com\/developer\/article\/\d+/i,
+                    remove: ['.com-markdown-collpase-hide .com-markdown-collpase-toggle'],
+                    content: ['.com-markdown-collpase-hide .com-markdown-collpase-main'],
+                },
+                {
+                    // 豆瓣图书
+                    reg: /^http(s)?:\/\/book\.douban\.com\/subject\/\d+/i,
+                    remove: [],
+                    content: [],
+                    script: function () {
+                        document.querySelectorAll('.indent > .short').forEach(function (el) {
+                            el.classList.add('hidden');
+                        });
+                        document.querySelectorAll('.indent > .all').forEach(function (el) {
+                            el.classList.remove('hidden');
+                        });
+                    },
+                },
+                {
+                    // 简书移动版
+                    reg: /^http(s)?:\/\/(w+\.)?jianshu\.com\/p\/\w+/i,
+                    remove: ['#note-show .content .show-content-free .collapse-tips'],
+                    content: ['#note-show .content .show-content-free .collapse-free-content'],
+                },
+                {
+                    // 站长之家
+                    reg: /^http(s)?:\/\/(w+\.)?chinaz\.com\/\w+/i,
+                    remove: ['.contentPadding'],
+                    content: ['#article-content'],
+                },
+                {
+                    // 品略
+                    reg: /^http(s)?:\/\/(w+\.)?pinlue\.com\/article\//i,
+                    remove: ['.readall_box'],
+                    content: ['.textcontent'],
+                },
+                {
+                    // 品略
+                    reg: /^http(s)?:\/\/m\.jiemian\.com\/article\/\d+/i,
+                    remove: ['.content-fold .show-change'],
+                    content: ['.article-main'],
+                },
+                {
+                    // 豆瓣日记
+                    reg: /^http(s)?:\/\/m\.douban\.com\/note\/\d+/i,
+                    remove: ['.oia-readall .read-all'],
+                    content: ['.note-content'],
+                },
+                {
+                    // Bilibili 专栏
+                    reg: /^http(s)?:\/\/(w+\.)?bilibili\.com\/read\/mobile\/\d+/i,
+                    remove: ['.max-content .load-more', '.h5-download-bar'],
+                    content: ['.max-content.limit'],
+                },
+                {
+                    // 看点快报
+                    reg: /^http(s)?:\/\/kuaibao\.qq\.com\/s\/\d+/i,
+                    remove: [
+                        '.share-page-additional',
+                        '.container .show-more',
+                        '.kb-bottom-fixed-wrapper',
+                    ],
+                    content: ['.container .content'],
+                },
+                {
+                    // 云栖社区
+                    reg: /^http(s)?:\/\/yq\.aliyun\.com\/articles\/\d+/i,
+                    remove: ['.article-hide-content .article-hide-box'],
+                    content: ['.article-hide-content'],
+                },
+                {
+                    // 百度经验
+                    reg: /^http(s)?:\/\/jingyan\.baidu\.com\/article\/\w+/i,
+                    remove: ['.read-whole-mask'],
+                    content: ['.exp-content-container.fold'],
+                },
+                {
+                    // 豆瓣小组
+                    reg: /^http(s)?:\/\/m\.douban\.com\/group\/topic\/\d+/i,
+                    remove: ['.oia-readall'],
+                    content: ['.note-content'],
+                },
+                {
+                    // 虎嗅移动版
+                    reg: /^http(s)?:\/\/m\.huxiu\.com\/article\/\d+/i,
+                    remove: ['.fresh-article-wrap'],
+                    content: ['#m-article-detail-page > .js-mask-box'],
+                },
+                {
+                    // 新浪新闻
+                    reg: /^http(s)?:\/\/\w+\.sina\.cn\/.*/i,
+                    remove: ['.look_more'],
+                    content: ['article.art_box'],
+                },
+                {
+                    // 小红书
+                    reg: /^http(s)?:\/\/(w+\.)?xiaohongshu\.com\/discovery\/item\/\w+/i,
+                    remove: ['.check-more'],
+                    content: ['.content'],
+                },
+                {
+                    // 搜狐
+                    reg: /^http(s)?:\/\/m\.sohu\.com\/a\/\w+/i,
+                    remove: ['.lookall-box'],
+                    content: [],
+                    style: ".hidden-content.hide {\n                display: block;\n              }",
+                },
+                {
+                    // 网易新闻移动端
+                    reg: /^http(s)?:\/\/c\.m\.163\.com\/news\/a\/\w+/i,
+                    remove: ['.g-article .show-more-wrap', '.g-btn-open-newsapp', '.widget-slider', '.g-top-slider'],
+                    content: ['.g-article'],
+                },
+                {
+                    // 好123
+                    reg: /^http(s)?:\/\/(w+\.)?hao123\.com/i,
+                    remove: ['.content-cover'],
+                    content: [],
+                    style: ".coolsites-wrapper {\n                display: block !important;\n              }",
+                },
+                {
+                    // 百问中文
+                    reg: /^http(s)?:\/\/(w+\.)?baiven\.com\/\w\/\d+/i,
+                    remove: ['.readall_box'],
+                    content: ['.article .article-content'],
+                },
+                {
+                    // 语雀
+                    reg: /^http(s)?:\/\/(w+\.)?yuque\.com\/\w+/i,
+                    remove: ['div[data-testid="doc-reader-login-card"]'],
+                    content: ['.yuque-doc-content'],
+                },
+                {
+                    // 腾讯看点
+                    reg: /^http(s)?:\/\/kandianshare\.html5\.qq\.com\/v\d\//i,
+                    remove: ['.article-mask', '.share-bottom-tips-wrap'],
+                    content: ['.at-content'],
+                },
+                {
+                    // 观察者网
+                    reg: /^http(s)?:\/\/m\.guancha\.cn\/\w+\/[\d_]+/i,
+                    remove: ['.textPageCont-footer', '.downloadBtn-box', '#downloadBtn-position'],
+                    content: ['.textPageCont'],
+                },
+                {
+                    // 腾讯看点快报
+                    reg: /^http(s)?:\/\/upage\.html5\.qq\.com\/kuaibao-detail\?/i,
+                    remove: ['.container .at-content>div:last-child'],
+                    content: ['.container .at-content'],
+                },
+                {
+                    // 果壳网
+                    reg: /^http(s)?:\/\/m\.guokr\.com\/article\/\d+/i,
+                    remove: ['div[class*=ShowAllArticle]'],
+                    content: ['div[class*=ArticleContent]'],
+                },
+                {
+                    // x 技术
+                    reg: /^http(s)?:\/\/(www\.)?xjishu\.com\//i,
+                    remove: ['.gradBox', '.readBox'],
+                    content: ['.con-box'],
+                },
+                {
+                    // 小专栏
+                    reg: /^http(s)?:\/\/xiaozhuanlan\.com\/topic\/\d+/i,
+                    remove: [],
+                    content: [
+                        '.xzl-topic-summary-content.hidden_topic_body.hidden',
+                    ],
+                    style: "\n              .xzl-topic-summary-content.hidden_topic_body.hidden {\n                display: block !important;\n              }\n              "
+                },
+                {
+                    // 算法网
+                    reg: /^http(s)?:\/\/ddrv\.cn\/a\/\d+/i,
+                    remove: ['#read-more-wrap'],
+                    content: ['#container']
+                },
+                {
+                    // reddit
+                    reg: /^http(s)?:\/\/(www\.)reddit\.com\//i,
+                    remove: ['.read-more'],
+                    content: [],
+                    script: function () {
+                        document.body.querySelectorAll('div').forEach(function (e) {
+                            if (/^\d+px$/i.test(e.style.maxHeight) && e.nextElementSibling && /button/i.test(e.nextElementSibling.tagName)) {
+                                e.setAttribute('style', '');
+                                e.nextElementSibling.classList.add('read-more');
+                            }
+                        });
+                    }
+                },
+            ];
+        }
+        CSDN.prototype.start = function () {
+            for (var _i = 0, _a = this.rules; _i < _a.length; _i++) {
+                var rule = _a[_i];
+                if (rule.reg.test(window.location.href)) {
+                    var removeEls = rule.remove.join(',\n');
+                    var contentEls = rule.content.join(',\n');
+                    GM_addStyle((rule.remove
+                        ? removeEls +
+                            " {\n                          display: none !important;\n                        }\n"
+                        : "") +
+                        (rule.content
+                            ? contentEls +
+                                " {\n                          height: auto !important;\n                          max-height: none !important;\n                        }\n"
+                            : "") +
+                        (rule.style ? rule.style : ""));
+                    if (typeof rule.script === 'function') {
+                        window.addEventListener('load', rule.script);
+                    }
+                    break;
+                }
+            }
+        };
+        return CSDN;
+    }());
+    new CSDN();
+})();
