@@ -6,6 +6,7 @@
 // @author          ZoDream
 // @include         https://www.ithome.com/*
 // @include         https://news.ifeng.com/*
+// @include         https://www.msn.cn/*/news/*
 // @require         https://code.jquery.com/jquery-2.1.4.min.js
 // @run-at          context-menu
 // ==/UserScript==
@@ -49,6 +50,25 @@
                             return;
                         }
                         pics.push($this.attr('data-original') || $this.attr('src'));
+                    });
+                    return {
+                        title: title,
+                        summary: summary,
+                        pics: pics,
+                    };
+                },
+                'www.msn.cn': function () {
+                    var title = $('#precontent').find("h1").text().trim();
+                    var main = $('#maincontent article');
+                    var summary = main.text().trim().substr(0, 88) + '...';
+                    var pics = [];
+                    main.find('img').each(function () {
+                        var $this = $(this);
+                        if ($this.width() < 100) {
+                            return;
+                        }
+                        var imgJson = JSON.parse($this.attr('data-src'));
+                        pics.push(imgJson ? imgJson.default.src : $this.attr('src'));
                     });
                     return {
                         title: title,

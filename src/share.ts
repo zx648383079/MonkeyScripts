@@ -9,6 +9,7 @@ import { UserScript } from "./core/monkey";
     include: [
         "https://www.ithome.com/*",
         "https://news.ifeng.com/*",
+        "https://www.msn.cn/*/news/*"
     ],
     require: "https://code.jquery.com/jquery-2.1.4.min.js",
     "run-at": "context-menu"
@@ -56,6 +57,26 @@ class Share {
                     return;
                 }
                 pics.push($this.attr('data-original') || $this.attr('src'));
+            });
+            return {
+                title,
+                summary,
+                pics,
+            };
+        },
+        'www.msn.cn': () => {
+            const title = $('#precontent').find("h1").text().trim();
+            const main = $('#maincontent article');
+            const summary = main.text().trim().substr(0, 88) + '...';
+            const pics: string[] = [];
+            main.find('img').each(function() {
+                const $this = $(this);
+                if ($this.width() < 100) {
+                    return;
+                }
+                const imgJson = JSON.parse($this.attr('data-src'));
+
+                pics.push(imgJson ? imgJson.default.src : $this.attr('src'));
             });
             return {
                 title,
