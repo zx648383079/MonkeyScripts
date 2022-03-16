@@ -49,8 +49,6 @@ class WxNews {
     
     public save(src: string, name: string) {
         var ext = this.getExt(src);
-        console.log(src, name);
-        
         GM_download(src, name + ext);
         // GM_xmlhttpRequest({
         //     method: 'GET',
