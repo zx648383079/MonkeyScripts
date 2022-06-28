@@ -9,15 +9,15 @@
   "author": "zodream",
   "license": "MIT",
   "devDependencies": {
-    "@types/jquery": "^3.5.5",
-    "@types/node": "^16.0.0",
-    "@types/readable-stream": "^2.3.10",
-    "@types/vinyl": "^2.0.5",
+    "@types/jquery": "^3.5.14",
+    "@types/node": "^18.0.0",
+    "@types/readable-stream": "^2.3.13",
+    "@types/vinyl": "^2.0.6",
     "gulp": "^4.0.2",
     "gulp-plumber": "^1.2.1",
     "gulp-typescript": "^6.0.0-alpha.1",
-    "readable-stream": "^3.6.0",
-    "typescript": "^4.3.5",
+    "readable-stream": "^4.0.0",
+    "typescript": "^4.7.4",
     "vinyl": "^2.2.1"
   }
 }
