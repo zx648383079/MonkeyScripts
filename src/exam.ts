@@ -34,7 +34,7 @@ declare var Cookies: any;
     version: "0.1",
     description: "题库抓取",
     author: "ZoDream",
-    include: [
+    match: [
         "https://www.jiakaobaodian.com/*",
         "http://tiku.21cnjy.com/*",
         "https://www.zujuan.com/*",

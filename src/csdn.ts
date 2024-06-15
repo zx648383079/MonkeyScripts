@@ -6,7 +6,7 @@ import { UserScript, GM_addStyle } from "./core/monkey";
     version: "0.1",
     description: "屏蔽登录，自动展开",
     author: "ZoDream",
-    include: [
+    match: [
         "https://blog.csdn.net/*",
     ],
     grant: 'GM_addStyle',

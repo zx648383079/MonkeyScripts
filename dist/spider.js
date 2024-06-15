@@ -4,9 +4,9 @@
 // @version         0.1
 // @description     商品信息抓取
 // @author          ZoDream
-// @include         https://item.jd.com/*
-// @include         https://detail.tmall.com/*
-// @include         https://item.taobao.com/*
+// @match           https://item.jd.com/*
+// @match           https://detail.tmall.com/*
+// @match           https://item.taobao.com/*
 // @require         https://code.jquery.com/jquery-2.1.4.min.js
 // @grant           GM_xmlhttpRequest
 // @run-at          context-menu

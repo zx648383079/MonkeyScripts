@@ -4,7 +4,7 @@
 // @version         0.1
 // @description     百度文库下载
 // @author          ZoDream
-// @include         https://wenku.baidu.com/*
+// @match           https://wenku.baidu.com/*
 // @grant           GM_openInTab
 // @run-at          context-menu
 // ==/UserScript==

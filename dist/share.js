@@ -4,9 +4,9 @@
 // @version         0.1
 // @description     分享到微博，并点评
 // @author          ZoDream
-// @include         https://www.ithome.com/*
-// @include         https://news.ifeng.com/*
-// @include         https://www.msn.cn/*/news/*
+// @match           https://www.ithome.com/*
+// @match           https://news.ifeng.com/*
+// @match           https://www.msn.cn/*/news/*
 // @require         https://code.jquery.com/jquery-2.1.4.min.js
 // @run-at          context-menu
 // ==/UserScript==

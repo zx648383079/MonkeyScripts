@@ -4,10 +4,10 @@
 // @version         0.1
 // @description     题库抓取
 // @author          ZoDream
-// @include         https://www.jiakaobaodian.com/*
-// @include         http://tiku.21cnjy.com/*
-// @include         https://www.zujuan.com/*
-// @include         http://tiku.zujuan.com/*
+// @match           https://www.jiakaobaodian.com/*
+// @match           http://tiku.21cnjy.com/*
+// @match           https://www.zujuan.com/*
+// @match           http://tiku.zujuan.com/*
 // @require         https://code.jquery.com/jquery-2.1.4.min.js
 // @grant           GM_xmlhttpRequest
 // @run-at          context-menu

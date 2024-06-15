@@ -9,7 +9,7 @@ import { UserScript, GM_xmlhttpRequest, GM_download } from "./core/monkey";
     version: "0.1",
     description: "一键下载微信公众号推文内的图片到本地保存",
     author: "ZoDream",
-    include: [
+    match: [
         "https://mp.weixin.qq.com/*",
     ],
     require: "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js",

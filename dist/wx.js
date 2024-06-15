@@ -5,7 +5,7 @@
 // @version         0.1
 // @description     一键下载微信公众号推文内的图片到本地保存
 // @author          ZoDream
-// @include         https://mp.weixin.qq.com/*
+// @match           https://mp.weixin.qq.com/*
 // @require         https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js
 // @grant           GM_xmlhttpRequest
 // @grant           GM_download
@@ -39,7 +39,6 @@
         };
         WxNews.prototype.save = function (src, name) {
             var ext = this.getExt(src);
-            console.log(src, name);
             GM_download(src, name + ext);
             // GM_xmlhttpRequest({
             //     method: 'GET',

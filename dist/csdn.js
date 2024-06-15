@@ -4,7 +4,7 @@
 // @version         0.1
 // @description     屏蔽登录，自动展开
 // @author          ZoDream
-// @include         https://blog.csdn.net/*
+// @match           https://blog.csdn.net/*
 // @grant           GM_addStyle
 // @run-at          document-end
 // ==/UserScript==

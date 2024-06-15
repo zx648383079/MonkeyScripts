@@ -6,7 +6,7 @@ import { UserScript } from "./core/monkey";
     version: "0.1",
     description: "分享到微博，并点评",
     author: "ZoDream",
-    include: [
+    match: [
         "https://www.ithome.com/*",
         "https://news.ifeng.com/*",
         "https://www.msn.cn/*/news/*"

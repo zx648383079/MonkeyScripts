@@ -49,8 +49,6 @@ interface UserScriptOption {
     /**
      * 支持哪些网址
      */
-    include?: string|string[];
-
     match?: string|string[];
 
     /**
@@ -74,7 +72,7 @@ interface UserScriptOption {
     connect?: string|string[];
 
     /**
-     * 定义注入脚本的瞬
+     * 定义注入脚本的时间
      */
     "run-at"?: "document-start" | "document-body" | "document-end" | "document-idle" | "context-menu";
 

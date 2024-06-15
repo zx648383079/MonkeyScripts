@@ -6,7 +6,7 @@ import { UserScript, GM_xmlhttpRequest } from "./core/monkey";
     version: "0.1",
     description: "商品信息抓取",
     author: "ZoDream",
-    include: [
+    match: [
         "https://item.jd.com/*",
         "https://detail.tmall.com/*",
         "https://item.taobao.com/*",
